@@ -1,19 +1,40 @@
+import Image from "next/image";
+import ScrollSlide from "@/components/ScrollSlide";
+
 export default function AboutUs() {
   return (
-    <section id="about" className="relative bg-transparent px-8 py-20">
-      <div className="relative z-[1] max-w-[680px]">
-        <h2 className="mb-5 text-[clamp(2rem,5vw,3rem)] font-extrabold uppercase tracking-[0.1em] text-[#f5e6c8]">
-          ABOUT US
-        </h2>
-        <p className="m-0 text-[0.95rem] leading-[1.85] text-[#c4a07a]">
-          Techie Sleuth is an innovative and immersive tech event designed to challenge curious minds, problem-solvers,
-          and digital explorers. Blending elements of cybersecurity, logical reasoning, and hidden clue discovery, the
-          event creates a thrilling environment where participants step into the role of a “sleuth” in the digital world.
-Organized for tech enthusiasts, students, and aspiring developers, Techie Sleuth encourages participants to think critically,
-collaborate effectively, and push their technical boundaries. From decoding encrypted messages to uncovering hidden data, every
-stage is crafted to test both knowledge and creativity.
-Our mission is to make learning technology engaging, competitive, and fun—turning complex problem-solving into an unforgettable adventure.
-        </p>
+    <section id="about" className="relative bg-transparent px-4 py-14 sm:px-6 sm:py-16 md:px-8 md:py-20">
+      <div className="relative z-[1] w-full text-left">
+        <div className="flex w-full flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-10">
+          <div className="max-w-[920px]">
+            <h2 className="mb-7 text-[clamp(2rem,5vw,3rem)] font-extrabold uppercase tracking-[0.1em] text-[#f5e6c8] max-sm:mb-5">
+              ABOUT US
+            </h2>
+            <p className="m-0 max-w-[920px] text-[1rem] leading-[1.8] text-[#c4a07a] sm:text-[1.08rem] md:text-[1.2rem]">
+              We are a passionate community driven by the principles of Free and Open Source Software (FOSS).
+              Our mission is to promote collaboration, innovation, and knowledge sharing by encouraging students
+              and tech enthusiasts to explore, contribute, and grow through open technologies.
+Through workshops, events, and projects, we aim to build a supportive environment where ideas are freely exchanged and creativity thrives.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 sm:gap-4 md:ml-auto md:justify-end">
+            <ScrollSlide direction="right" delayMs={30}>
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white p-2 shadow-[0_8px_20px_rgba(0,0,0,0.25)] animate-[floatLogo_6s_ease-in-out_infinite] sm:h-28 sm:w-28 md:h-36 md:w-36">
+                <Image src="/foss.png" alt="FOSS" width={96} height={96} className="h-full w-full object-contain" />
+              </div>
+            </ScrollSlide>
+            <ScrollSlide direction="right" delayMs={100}>
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white p-2 shadow-[0_8px_20px_rgba(0,0,0,0.25)] animate-[floatLogo_6s_ease-in-out_infinite] sm:h-28 sm:w-28 md:h-36 md:w-36">
+                <Image src="/wif.png" alt="WIF" width={96} height={96} className="h-full w-full object-contain" />
+              </div>
+            </ScrollSlide>
+            <ScrollSlide direction="right" delayMs={170}>
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white p-2 shadow-[0_8px_20px_rgba(0,0,0,0.25)] animate-[floatLogo_6s_ease-in-out_infinite] sm:h-28 sm:w-28 md:h-36 md:w-36">
+                <Image src="/nsbm.png" alt="NSBM" width={96} height={96} className="h-full w-full object-contain" />
+              </div>
+            </ScrollSlide>
+          </div>
+        </div>
       </div>
     </section>
   );

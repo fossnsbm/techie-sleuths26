@@ -41,6 +41,15 @@ export default function Navbar() {
         </li>
         <li>
           <Link
+            href="#register"
+            onClick={() => setMenuOpen(false)}
+            className="block border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:border-none sm:px-0 sm:py-0"
+          >
+            REGISTER
+          </Link>
+        </li>
+        <li>
+          <Link
             href="#about"
             onClick={() => setMenuOpen(false)}
             className="block border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:border-none sm:px-0 sm:py-0"

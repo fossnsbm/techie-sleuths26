@@ -11,11 +11,11 @@ export default function Home() {
     <div>
       <Navbar />
       <Hero />
-      <AboutUs />
-      <WhyTechie />
-      <Games />
-      <RegForm />
-      <Footer />
+        <AboutUs />
+        <WhyTechie />
+        <Games />
+        <RegForm />
+        <Footer />
     </div>
   );
 }
