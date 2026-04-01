@@ -278,7 +278,7 @@ export default function RegForm() {
                   <div className="mb-5 flex items-center justify-center gap-5">
                     <button
                       type="button"
-                      className="text-2xl leading-none text-[#c87838] disabled:cursor-not-allowed disabled:text-[#664422]"
+                      className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#c87838]/30 text-4xl leading-none text-[#c87838] transition-all hover:border-[#c87838] hover:bg-[#c87838]/10 hover:text-[#f5e6c8] disabled:cursor-not-allowed disabled:border-[#664422]/30 disabled:text-[#664422] disabled:hover:bg-transparent"
                       onClick={goToPrevMember}
                       disabled={currentMemberIndex === 0}
                     >
@@ -289,7 +289,7 @@ export default function RegForm() {
                     </span>
                     <button
                       type="button"
-                      className="text-2xl leading-none text-[#c87838] disabled:cursor-not-allowed disabled:text-[#664422]"
+                      className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#c87838]/30 text-4xl leading-none text-[#c87838] transition-all hover:border-[#c87838] hover:bg-[#c87838]/10 hover:text-[#f5e6c8] disabled:cursor-not-allowed disabled:border-[#664422]/30 disabled:text-[#664422] disabled:hover:bg-transparent"
                       onClick={goToNextMember}
                       disabled={currentMemberIndex === memberCount - 1}
                     >
@@ -300,7 +300,7 @@ export default function RegForm() {
                     {currentMemberIndex >= 2 && (
                       <button
                         type="button"
-                        className="ml-2 text-lg leading-none text-red-400 hover:text-red-300 transition"
+                        className="ml-2 flex h-12 w-12 items-center justify-center rounded-lg border border-red-400/30 text-3xl leading-none text-red-400 transition-all hover:border-red-400 hover:bg-red-400/10 hover:text-red-300"
                         onClick={removeMember}
                         aria-label="Remove member"
                       >
