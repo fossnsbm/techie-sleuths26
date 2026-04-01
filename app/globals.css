@@ -24,3 +24,134 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Force hide default cursor on all interactive elements when custom cursor is active */
+button,
+input,
+textarea,
+select,
+a,
+label,
+[role="button"],
+[onclick] {
+  cursor: none !important;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(90px) scale(0.94);
+  transition: opacity 950ms cubic-bezier(0.22, 1, 0.36, 1), transform 950ms cubic-bezier(0.22, 1, 0.36, 1), filter 850ms ease;
+  will-change: opacity, transform, filter;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
+.scroll-slide {
+  opacity: 0;
+  transition: opacity 850ms cubic-bezier(0.22, 1, 0.36, 1), transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-slide-left {
+  transform: translateX(-90px);
+}
+
+.scroll-slide-right {
+  transform: translateX(90px);
+}
+
+.scroll-slide.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.site-background {
+  background-image:
+    radial-gradient(ellipse at 30% 40%, rgba(120, 40, 10, 0.45) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(60, 15, 5, 0.55) 0%, transparent 60%),
+    url('/hero-bg.jpg');
+  background-color: #1a0a02;
+  background-size: cover, cover, cover;
+  background-position: center top, center top, center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+@keyframes floatLeft {
+  0%,
+  100% {
+    transform: translate(-60%, 0px);
+  }
+  50% {
+    transform: translate(-64%, -14px);
+  }
+}
+
+@keyframes floatRight {
+  0%,
+  100% {
+    transform: translate(58%, 0px);
+  }
+  50% {
+    transform: translate(54%, -12px);
+  }
+}
+
+@keyframes floatLogo {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes cursorBlob {
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate(8px, 6px) scale(1.14);
+    opacity: 0.95;
+  }
+}
+
+@keyframes cursorSwirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.04);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes cursorWobble {
+  0%,
+  100% {
+    border-radius: 50% 50% 50% 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    border-radius: 53% 47% 49% 51%;
+    transform: rotate(2deg) scale(1.01);
+  }
+  50% {
+    border-radius: 47% 53% 52% 48%;
+    transform: rotate(-2deg) scale(0.99);
+  }
+  75% {
+    border-radius: 51% 49% 46% 54%;
+    transform: rotate(1deg) scale(1.01);
+  }
+}
