@@ -46,7 +46,7 @@ export default function Hero() {
       ring.current.x = lerp(ring.current.x, mouse.current.x, 0.12);
       ring.current.y = lerp(ring.current.y, mouse.current.y, 0.12);
       const x = ring.current.x + "px", y = ring.current.y + "px";
-      if (ringRef.current)  { ringRef.current.style.left  = x; ringRef.current.style.top  = y; }
+      if (ringRef.current) { ringRef.current.style.left = x; ringRef.current.style.top = y; }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -86,7 +86,7 @@ export default function Hero() {
 
       <section className="relative flex min-h-[520px] h-screen w-full items-center justify-center overflow-hidden bg-transparent px-3 sm:px-6">
 
-         {/* ── CONTENT ── */}
+        {/* ── CONTENT ── */}
         <div className="relative z-[5] px-2 text-center sm:px-6">
           {/* Logo */}
           <div
@@ -114,7 +114,7 @@ export default function Hero() {
                   ? "scale-[1.18] brightness-[1.15] drop-shadow-[0_0_40px_rgba(196,160,122,0.5)]"
                   : "scale-100 brightness-90",
               ].join(" ")}
-              onLoadingComplete={() => setIsLoading(false)}
+              onLoad={() => setIsLoading(false)}
               priority
             />
             <Image
@@ -146,7 +146,7 @@ export default function Hero() {
             />
 
 
-          
+
           </div>
 
           {/* Typewriter tagline */}
