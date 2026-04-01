@@ -1,4 +1,5 @@
 import ScrollSlide from "@/components/ScrollSlide";
+import Image from "next/image";
 
 interface Game {
   id: number;
@@ -32,7 +33,7 @@ export default function Games() {
                 {game.image ? (
                   <ScrollSlide className="h-full w-full" direction={game.id % 2 === 0 ? "right" : "left"} delayMs={game.id * 40}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={game.image} alt={game.title} className="h-full w-full object-cover p-0 sm:object-contain sm:p-2" />
+                    <Image src={game.image} alt={game.title} width={400} height={400} className="h-full w-full object-contain p-0 sm:object-contain sm:p-2" />
                   </ScrollSlide>
                 ) : (
                   <div className="h-full w-full bg-[linear-gradient(135deg,#2a1a0a_0%,#1a0a00_100%)]" />
