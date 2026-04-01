@@ -32,6 +32,8 @@ textarea,
 select,
 a,
 label,
+details,
+summary,
 [role="button"],
 [onclick] {
   cursor: none !important;
