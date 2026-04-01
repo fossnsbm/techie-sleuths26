@@ -69,9 +69,9 @@ export default function Hero() {
       <div
         ref={ringRef}
         className={[
-          "fixed pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2",
+          "fixed pointer-events-none z-9999 -translate-x-1/2 -translate-y-1/2",
           "transition-[width,height,transform] duration-300",
-          overLogo ? "h-[124px] w-[124px]" : "h-[88px] w-[88px]",
+          overLogo ? "h-31 w-31" : "h-22 w-22",
         ].join(" ")}
       >
         <Image
@@ -84,15 +84,15 @@ export default function Hero() {
         />
       </div>
 
-      <section className="relative flex min-h-[520px] h-screen w-full items-center justify-center overflow-hidden bg-transparent px-3 sm:px-6">
+      <section className="relative flex min-h-130 h-screen w-full items-center justify-center overflow-hidden bg-transparent px-3 sm:px-6">
 
         {/* ── CONTENT ── */}
-        <div className="relative z-[5] px-2 text-center sm:px-6">
+        <div className="relative z-5 px-2 text-center sm:px-6">
           {/* Logo */}
           <div
             ref={logoRef}
             className="relative mx-auto mb-6 flex items-center justify-center
-                       h-[220px] w-[220px] sm:h-[300px] sm:w-[300px] md:h-[420px] md:w-[420px] lg:h-[800px] lg:w-[800px]"
+                       h-55 w-55 sm:h-75 sm:w-75 md:h-105 md:w-105 lg:h-200 lg:w-200"
           >
             <div className={["absolute -inset-5 rounded-full pointer-events-none z-0",
               "bg-[radial-gradient(circle,rgba(196,160,122,0.12)_0%,transparent_70%)]",
@@ -107,8 +107,8 @@ export default function Hero() {
               width={800}
               height={800}
               className={[
-                "relative z-[1] h-auto w-full object-contain",
-                "transition-[opacity,transform,filter] duration-700 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]",
+                "relative z-1 h-auto w-full object-contain",
+                "transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
                 isLoading ? "opacity-0" : "opacity-100",
                 overLogo
                   ? "scale-[1.18] brightness-[1.15] drop-shadow-[0_0_40px_rgba(196,160,122,0.5)]"
@@ -123,7 +123,7 @@ export default function Hero() {
               width={300}
               height={300}
               className={[
-                "pointer-events-none absolute left-0 top-[8%] z-[2] h-auto w-[30%] translate-x-[20%] object-contain",
+                "pointer-events-none absolute left-0 top-[8%] z-2 h-auto w-[30%] translate-x-[20%] object-contain",
                 "transition-opacity duration-700",
                 "animate-[floatLeft_11s_ease-in-out_infinite]",
                 isLoading ? "opacity-0" : "opacity-90",
@@ -137,7 +137,7 @@ export default function Hero() {
               width={360}
               height={360}
               className={[
-                "pointer-events-none absolute right-0 bottom-[14%] z-[2] h-auto w-[35%] -translate-x-[20%] object-contain",
+                "pointer-events-none absolute right-0 bottom-[14%] z-2 h-auto w-[35%] -translate-x-[20%] object-contain",
                 "transition-opacity duration-700",
                 "animate-[floatRight_10s_ease-in-out_infinite]",
                 isLoading ? "opacity-0" : "opacity-80",
@@ -152,7 +152,7 @@ export default function Hero() {
           {/* Typewriter tagline */}
           <p className="m-0 min-h-[2em] text-[clamp(0.95rem,2vw,1.2rem)] italic tracking-[0.06em] text-[#c4a07a] opacity-[0.88]">
             {displayed}
-            <span className="inline-block w-[2px] h-[1.1em] bg-[#c4a07a] ml-[3px] align-middle animate-[blink_0.75s_step-end_infinite]" />
+            <span className="inline-block w-0.5 h-[1.1em] bg-[#c4a07a] ml-0.75 align-middle animate-[blink_0.75s_step-end_infinite]" />
           </p>
         </div>
       </section>
