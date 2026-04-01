@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as z from 'zod'
+import { toast } from 'sonner'
+import { registerTeam } from '@/app/actions/register-team'
 
 // Zod schemas
 const teamMember = z.object({
@@ -36,6 +38,7 @@ export default function RegForm() {
   const [currentMemberIndex, setCurrentMemberIndex] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (errors.length > 0 && registrationSection.current) {
@@ -75,38 +78,83 @@ export default function RegForm() {
     }
   };
 
-  const handleSubmit = (formData: FormData) => {
+  const handleSubmit = async (formData: FormData) => {
     setErrors([]);
+    setIsSubmitting(true);
 
-    const teamMembers: TeamMember[] = []
+    try {
+      const teamMembers: TeamMember[] = []
 
-    for (let i = 0; i < memberCount; i++) {
-      const name = formData.get(`teamMembers[${i}].name`);
-      const studentId = formData.get(`teamMembers[${i}].studentId`);
-      if (name && studentId) {
-        teamMembers.push({
-          name: name.toString(),
-          studentId: studentId.toString()
-        });
+      for (let i = 0; i < memberCount; i++) {
+        const name = formData.get(`teamMembers[${i}].name`);
+        const studentId = formData.get(`teamMembers[${i}].studentId`);
+        if (name && studentId) {
+          teamMembers.push({
+            name: name.toString(),
+            studentId: studentId.toString()
+          });
+        }
       }
+
+      const data = {
+        teamName: formData.get('teamName')?.toString() || '',
+        teamEmail: formData.get('teamEmail')?.toString() || '',
+        teamContact: formData.get('teamContact')?.toString() || '',
+        teamPassword: formData.get('teamPassword')?.toString() || '',
+        confirmPassword: formData.get('confirmPassword')?.toString() || '',
+        teamMembers
+      };
+
+      // Client-side validation
+      const registration = registrationSchema.safeParse(data);
+
+      if (!registration.success) {
+        const errorMessages = registration.error.issues.map(err =>
+          `${err.path.join('.')}: ${err.message}`
+        );
+        setErrors(errorMessages);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Call Server Action
+      const result = await registerTeam({
+        teamName: registration.data.teamName,
+        teamEmail: registration.data.teamEmail,
+        teamContact: registration.data.teamContact,
+        teamPassword: registration.data.teamPassword,
+        teamMembers: registration.data.teamMembers
+      });
+
+      if (result.success) {
+        toast.success('Team registered successfully!', {
+          description: 'Your team has been registered. See you at Techie Sleuths 2026'
+        });
+
+        // Reset form after a short delay to show success message
+        setSubmitted(true);
+
+        // Reset the form state after 3 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+          setMemberCount(2);
+          setCurrentMemberIndex(0);
+        }, 3000);
+      } else {
+        toast.error('Registration failed', {
+          description: result.error || 'An unexpected error occurred. Please try again.'
+        });
+        setErrors([result.error || 'Registration failed']);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error('Registration failed', {
+        description: 'An unexpected error occurred. Please try again.'
+      });
+      setErrors(['An unexpected error occurred. Please try again.']);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const data = {
-      ...Object.fromEntries(formData), teamMembers
-    };
-
-    const registration = registrationSchema.safeParse(data);
-
-    if (!registration.success) {
-      const errorMessages = registration.error.issues.map(err =>
-        `${err.path.join('.')}: ${err.message}`
-      );
-      setErrors(errorMessages);
-      return;
-    }
-
-    console.log("Team registration submitted", registration.data);
-    setSubmitted(true);
   };
 
   const inputBaseClass =
@@ -306,9 +354,10 @@ export default function RegForm() {
 
             <button
               type="submit"
-              className="w-full rounded bg-[#c87838] px-4 py-3.5 text-sm font-semibold tracking-[0.08em] text-white transition hover:bg-[#a85e2a]"
+              disabled={isSubmitting}
+              className="w-full rounded bg-[#c87838] px-4 py-3.5 text-sm font-semibold tracking-[0.08em] text-white transition hover:bg-[#a85e2a] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              REGISTER TEAM
+              {isSubmitting ? 'REGISTERING...' : 'REGISTER TEAM'}
             </button>
           </form>
         )}
