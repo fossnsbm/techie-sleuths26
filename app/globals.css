@@ -25,6 +25,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Force hide default cursor on all interactive elements when custom cursor is active */
+button,
+input,
+textarea,
+select,
+a,
+label,
+[role="button"],
+[onclick] {
+  cursor: none !important;
+}
+
 .scroll-reveal {
   opacity: 0;
   filter: blur(8px);
