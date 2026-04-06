@@ -13,14 +13,14 @@ export default function DashboardNav() {
   // Helper function to determine if a link is active
   const getLinkClasses = (href: string) => {
     const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
-    
+
     const baseClasses = "block px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] transition";
     const mobileClasses = "border-b border-[rgba(200,120,60,0.08)] sm:border-none sm:px-0 sm:py-0";
-    
+
     if (isActive) {
       return `${baseClasses} ${mobileClasses} text-[#f5e6c8] sm:border-b-2 sm:border-[#d4b896] sm:pb-1`;
     }
-    
+
     return `${baseClasses} ${mobileClasses} text-[#d4b896] hover:text-[#f5e6c8]`;
   };
 
@@ -34,7 +34,7 @@ export default function DashboardNav() {
           TECHIE SLEUTHS 26
         </Link>
       </div>
-      
+
       <button
         className="flex flex-col gap-[5px] bg-transparent p-1 sm:hidden"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -46,9 +46,8 @@ export default function DashboardNav() {
       </button>
 
       <ul
-        className={`absolute left-0 right-0 top-full flex flex-col bg-[rgba(18,6,2,0.97)] sm:static sm:flex sm:flex-row sm:items-center sm:gap-8 sm:bg-transparent ${
-          menuOpen ? "flex" : "hidden sm:flex"
-        }`}
+        className={`absolute left-0 right-0 top-full flex flex-col bg-[rgba(18,6,2,0.97)] sm:static sm:flex sm:flex-row sm:items-center sm:gap-8 sm:bg-transparent ${menuOpen ? "flex" : "hidden sm:flex"
+          }`}
       >
         <li>
           <Link
@@ -57,6 +56,15 @@ export default function DashboardNav() {
             className={getLinkClasses('/dashboard')}
           >
             DASHBOARD
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/leaderboard"
+            onClick={() => setMenuOpen(false)}
+            className={getLinkClasses('/leaderboard')}
+          >
+            LEADERBOARD
           </Link>
         </li>
         <li>
