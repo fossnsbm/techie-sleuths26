@@ -7,32 +7,62 @@ export async function proxy(request: NextRequest) {
   // Securely verify user by contacting Supabase Auth server
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Check if the route is protected (dashboard routes)
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    // If no user, redirect to login with the intended destination
+  const pathname = request.nextUrl.pathname
+
+  // Helper to get team's vault status
+  const getVaultStatus = async () => {
+    if (!user) return null
+    const { data: team } = await supabase
+      .from('teams')
+      .select('vault_unlocked')
+      .eq('user_id', user.id)
+      .single()
+    return team?.vault_unlocked ?? false
+  }
+
+  // Protected route: /vault (requires login)
+  if (pathname === '/vault') {
     if (!user) {
+      // Not logged in - redirect to login
       const redirectUrl = new URL('/login', request.url)
-      redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+      redirectUrl.searchParams.set('redirect', '/vault')
       return NextResponse.redirect(redirectUrl)
     }
 
-    // Check vault status (except for /dashboard/vault itself to avoid redirect loop)
-    if (request.nextUrl.pathname !== '/dashboard/vault') {
-      const { data: team } = await supabase
-        .from('teams')
-        .select('vault_unlocked')
-        .eq('user_id', user.id)
-        .single()
-
-      // If vault is not unlocked, redirect to vault page
-      if (!team?.vault_unlocked) {
-        return NextResponse.redirect(new URL('/dashboard/vault', request.url))
-      }
+    // Check if vault is already unlocked
+    const vaultUnlocked = await getVaultStatus()
+    if (vaultUnlocked) {
+      // Already unlocked - redirect to dashboard
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
+
+    // Vault is locked - allow access to vault page
+    return response
+  }
+
+  // Protected route: /dashboard/* (requires login + unlocked vault)
+  if (pathname.startsWith('/dashboard')) {
+    if (!user) {
+      // Not logged in - redirect to login
+      const redirectUrl = new URL('/login', request.url)
+      redirectUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(redirectUrl)
+    }
+
+    // Check vault status
+    const vaultUnlocked = await getVaultStatus()
+    if (!vaultUnlocked) {
+      // Vault is locked - redirect to vault page
+      return NextResponse.redirect(new URL('/vault', request.url))
+    }
+
+    // Vault is unlocked - allow access to dashboard
+    return response
   }
 
   // If user is logged in and tries to access login page, redirect to dashboard
-  if (request.nextUrl.pathname === '/login' && user) {
+  // (proxy will handle vault check on subsequent request)
+  if (pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 

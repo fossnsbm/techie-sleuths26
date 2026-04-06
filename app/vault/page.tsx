@@ -26,8 +26,8 @@ export default function VaultPage() {
         setIsUnlocked(true)
         // Redirect after 3 seconds
         setTimeout(() => {
-          router.push('/dashboard')
-        }, 2000)
+          location.href = '/dashboard'
+        }, 1500)
       } else {
         // Trigger shake animation
         setShake(true)
@@ -58,8 +58,8 @@ export default function VaultPage() {
         {/* Glow effect behind vault */}
         <div
           className={`absolute inset-0 rounded-full blur-3xl transition-all duration-1000 ${isUnlocked
-              ? 'bg-[rgba(100,200,100,0.3)] scale-125'
-              : 'bg-[rgba(200,120,60,0.15)]'
+            ? 'bg-[rgba(100,200,100,0.3)] scale-125'
+            : 'bg-[rgba(200,120,60,0.15)]'
             }`}
         />
 
@@ -110,8 +110,8 @@ export default function VaultPage() {
               required
               disabled={isSubmitting}
               className={`w-full rounded border bg-[rgba(60,40,20,0.6)] px-4 py-3 text-center text-lg tracking-[0.1em] text-[#f5e6c8] placeholder:text-[#998866] outline-none transition focus:bg-[rgba(80,50,20,0.8)] ${error
-                  ? 'border-red-500/50 focus:border-red-500/70'
-                  : 'border-[rgba(200,120,60,0.3)] focus:border-[rgba(200,120,60,0.6)]'
+                ? 'border-red-500/50 focus:border-red-500/70'
+                : 'border-[rgba(200,120,60,0.3)] focus:border-[rgba(200,120,60,0.6)]'
                 }`}
               autoComplete="off"
             />
