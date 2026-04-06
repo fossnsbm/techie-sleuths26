@@ -15,6 +15,20 @@ export async function proxy(request: NextRequest) {
       redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
       return NextResponse.redirect(redirectUrl)
     }
+
+    // Check vault status (except for /dashboard/vault itself to avoid redirect loop)
+    if (request.nextUrl.pathname !== '/dashboard/vault') {
+      const { data: team } = await supabase
+        .from('teams')
+        .select('vault_unlocked')
+        .eq('user_id', user.id)
+        .single()
+
+      // If vault is not unlocked, redirect to vault page
+      if (!team?.vault_unlocked) {
+        return NextResponse.redirect(new URL('/dashboard/vault', request.url))
+      }
+    }
   }
 
   // If user is logged in and tries to access login page, redirect to dashboard
