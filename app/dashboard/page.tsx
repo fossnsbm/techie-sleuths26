@@ -86,7 +86,6 @@ export default async function DashboardPage() {
         <section className="mb-6 sm:mb-8">
           <CompactTeamSummary
             teamName={team.team_name}
-            status={(team.status || 'pending') as "pending" | "approved" | "rejected"}
             memberCount={team.team_members.length}
           />
         </section>
@@ -110,8 +109,8 @@ export default async function DashboardPage() {
               value={`${stats.gamesCompleted}/3`} 
             />
             <StatsCard 
-              label="Status" 
-              value={team.status ? team.status.charAt(0).toUpperCase() + team.status.slice(1) : 'Pending'} 
+              label="Members" 
+              value={team.team_members.length} 
             />
           </div>
         </section>
