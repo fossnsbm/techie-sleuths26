@@ -15,6 +15,11 @@ const passwordSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters')
 })
 
+const aiEvaluationSchema = z.object({
+  submissionId: z.uuid('Invalid submission id'),
+  awardedPoints: z.number().int().min(0, 'Points must be between 0 and 100').max(100, 'Points must be between 0 and 100')
+})
+
 export interface AdminTeamRecord {
   id: string
   user_id: string | null
@@ -33,6 +38,18 @@ export interface AdminTeamRecord {
 interface ActionResult {
   success: boolean
   message: string
+}
+
+export interface AdminAISubmissionRecord {
+  id: string
+  team_id: string
+  team_name: string
+  prompt_text: string
+  image_path: string
+  image_url: string
+  awarded_points: number
+  evaluated_at: string | null
+  created_at: string | null
 }
 
 export async function getAdminTeams(): Promise<AdminTeamRecord[]> {
@@ -198,6 +215,77 @@ export async function deleteAdminTeam(teamId: string): Promise<ActionResult> {
     return { success: true, message: 'Team deleted successfully' }
   } catch (error) {
     console.error('Unexpected error deleting team:', error)
+    return { success: false, message: 'An unexpected error occurred' }
+  }
+}
+
+export async function getAdminAIInterrogationSubmissions(): Promise<AdminAISubmissionRecord[]> {
+  try {
+    await requireAdmin()
+    const adminClient = createAdminClient()
+
+    const { data, error } = await adminClient
+      .from('ai_interrogation_submissions')
+      .select('id, team_id, prompt_text, image_path, awarded_points, evaluated_at, created_at, teams!inner(team_name)')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching AI interrogation submissions for admin:', error)
+      return []
+    }
+
+    return (data || []).map((row: any) => {
+      const { data: publicUrlData } = adminClient.storage
+        .from('ai-interrogation-uploads')
+        .getPublicUrl(row.image_path)
+
+      return {
+        id: row.id,
+        team_id: row.team_id,
+        team_name: row.teams?.team_name || 'Unknown Team',
+        prompt_text: row.prompt_text,
+        image_path: row.image_path,
+        image_url: publicUrlData.publicUrl,
+        awarded_points: row.awarded_points,
+        evaluated_at: row.evaluated_at,
+        created_at: row.created_at
+      }
+    })
+  } catch (error) {
+    console.error('Unexpected error fetching AI interrogation submissions:', error)
+    return []
+  }
+}
+
+export async function evaluateAdminAIInterrogationSubmission(submissionId: string, awardedPoints: number): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+
+    const validated = aiEvaluationSchema.safeParse({ submissionId, awardedPoints })
+    if (!validated.success) {
+      return {
+        success: false,
+        message: validated.error.issues[0].message
+      }
+    }
+
+    const adminClient = createAdminClient()
+    const { error } = await adminClient
+      .from('ai_interrogation_submissions')
+      .update({
+        awarded_points: validated.data.awardedPoints,
+        evaluated_at: new Date().toISOString()
+      })
+      .eq('id', validated.data.submissionId)
+
+    if (error) {
+      console.error('Error evaluating AI interrogation submission:', error)
+      return { success: false, message: 'Failed to save evaluation' }
+    }
+
+    return { success: true, message: 'Evaluation saved successfully' }
+  } catch (error) {
+    console.error('Unexpected error evaluating AI interrogation submission:', error)
     return { success: false, message: 'An unexpected error occurred' }
   }
 }
