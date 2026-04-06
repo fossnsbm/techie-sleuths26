@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_interrogation_submissions: {
+        Row: {
+          awarded_points: number
+          created_at: string | null
+          evaluated_at: string | null
+          id: string
+          image_path: string
+          prompt_text: string
+          team_id: string
+        }
+        Insert: {
+          awarded_points?: number
+          created_at?: string | null
+          evaluated_at?: string | null
+          id?: string
+          image_path: string
+          prompt_text: string
+          team_id: string
+        }
+        Update: {
+          awarded_points?: number
+          created_at?: string | null
+          evaluated_at?: string | null
+          id?: string
+          image_path?: string
+          prompt_text?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_interrogation_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: true
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       no_exit_challenges: {
         Row: {
           answer: string

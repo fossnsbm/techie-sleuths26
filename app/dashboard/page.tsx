@@ -5,6 +5,7 @@ import { getAuthenticatedTeam } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getTrailOfShadowsScore } from "@/app/actions/trail-of-shadows";
 import { getNoExitScore } from "@/app/actions/no-exit";
+import { getAIInterrogationScore } from "@/app/actions/ai-interrogation";
 
 // Force dynamic rendering since we use cookies
 export const dynamic = 'force-dynamic';
@@ -49,15 +50,17 @@ export default async function DashboardPage() {
   // Fetch real Trail of Shadows score
   const trailOfShadowsScore = await getTrailOfShadowsScore();
   const noExitScore = await getNoExitScore();
+  const aiInterrogationScore = await getAIInterrogationScore();
 
   const completedTrailOfShadows = trailOfShadowsScore.questionsCompleted === 10 ? 1 : 0;
   const completedNoExit = noExitScore.challengesCompleted === 3 ? 1 : 0;
+  const completedAIInterrogation = aiInterrogationScore.hasSubmitted ? 1 : 0;
 
   // Calculate stats
   const stats = {
-    points: trailOfShadowsScore.totalScore + noExitScore.totalScore,
+    points: trailOfShadowsScore.totalScore + noExitScore.totalScore + aiInterrogationScore.totalScore,
     rank: "TBD",
-    gamesCompleted: completedTrailOfShadows + completedNoExit
+    gamesCompleted: completedTrailOfShadows + completedNoExit + completedAIInterrogation
   };
 
   return (
