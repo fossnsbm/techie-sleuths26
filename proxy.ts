@@ -4,13 +4,13 @@ import { createMiddlewareClient } from '@/lib/supabase-auth'
 export async function proxy(request: NextRequest) {
   const { supabase, response } = createMiddlewareClient(request)
 
-  // Refresh session if it exists
-  const { data: { session } } = await supabase.auth.getSession()
+  // Securely verify user by contacting Supabase Auth server
+  const { data: { user } } = await supabase.auth.getUser()
 
   // Check if the route is protected (dashboard routes)
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    // If no session, redirect to login with the intended destination
-    if (!session) {
+    // If no user, redirect to login with the intended destination
+    if (!user) {
       const redirectUrl = new URL('/login', request.url)
       redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
       return NextResponse.redirect(redirectUrl)
@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // If user is logged in and tries to access login page, redirect to dashboard
-  if (request.nextUrl.pathname === '/login' && session) {
+  if (request.nextUrl.pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 

@@ -16,22 +16,23 @@ export interface AuthenticatedTeam {
 }
 
 /**
- * Gets the currently authenticated user's session
+ * Gets the currently authenticated user
+ * Uses getUser() instead of getSession() for secure server-side validation
  * Returns null if not authenticated
  */
-export async function getSession() {
+export async function getUser() {
   try {
     const supabase = await createAuthClient()
-    const { data: { session }, error } = await supabase.auth.getSession()
+    const { data: { user }, error } = await supabase.auth.getUser()
     
     if (error) {
-      console.error('Error getting session:', error)
+      console.error('Error getting user:', error)
       return null
     }
     
-    return session
+    return user
   } catch (error) {
-    console.error('Unexpected error getting session:', error)
+    console.error('Unexpected error getting user:', error)
     return null
   }
 }
@@ -42,9 +43,9 @@ export async function getSession() {
  */
 export async function getAuthenticatedTeam(): Promise<AuthenticatedTeam | null> {
   try {
-    const session = await getSession()
+    const user = await getUser()
     
-    if (!session || !session.user) {
+    if (!user) {
       return null
     }
 
@@ -54,7 +55,7 @@ export async function getAuthenticatedTeam(): Promise<AuthenticatedTeam | null> 
     const { data: team, error } = await supabase
       .from('teams')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .single()
 
     if (error) {
@@ -86,9 +87,9 @@ export async function getAuthenticatedTeam(): Promise<AuthenticatedTeam | null> 
 
 /**
  * Checks if the current user is authenticated
- * Returns true if session exists, false otherwise
+ * Returns true if user exists, false otherwise
  */
 export async function isAuthenticated(): Promise<boolean> {
-  const session = await getSession()
-  return session !== null
+  const user = await getUser()
+  return user !== null
 }
