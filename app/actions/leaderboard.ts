@@ -28,3 +28,24 @@ export async function getPublicLeaderboard(): Promise<LeaderboardEntry[]> {
     return []
   }
 }
+
+export async function getTeamRank(teamId: string): Promise<number | null> {
+  try {
+    const supabase = createServerClient()
+    const { data, error } = await supabase.rpc('get_team_rank', { p_team_id: teamId })
+
+    if (error) {
+      console.error('Error fetching team rank:', error)
+      return null
+    }
+
+    if (!data || data.length === 0) {
+      return null
+    }
+
+    return Number(data[0].rank)
+  } catch (error) {
+    console.error('Unexpected error fetching team rank:', error)
+    return null
+  }
+}
