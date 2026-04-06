@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { logout } from "@/app/actions/logout";
 
 export default function DashboardNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
 
   // Helper function to determine if a link is active
@@ -70,16 +72,21 @@ export default function DashboardNav() {
           </Link>
         </li>
         <li>
-          <button
-            onClick={() => {
+          <form
+            action={async () => {
+              setIsLoggingOut(true);
               setMenuOpen(false);
-              // Logout functionality to be implemented
-              console.log("Logout clicked");
+              await logout();
             }}
-            className="block w-full border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:w-auto sm:border sm:border-[rgba(200,120,60,0.3)] sm:px-4 sm:py-2 sm:text-center sm:hover:border-[rgba(200,120,60,0.6)]"
           >
-            LOGOUT
-          </button>
+            <button
+              type="submit"
+              disabled={isLoggingOut}
+              className="block w-full border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] disabled:opacity-50 sm:w-auto sm:border sm:border-[rgba(200,120,60,0.3)] sm:px-4 sm:py-2 sm:text-center sm:hover:border-[rgba(200,120,60,0.6)]"
+            >
+              {isLoggingOut ? 'LOGGING OUT...' : 'LOGOUT'}
+            </button>
+          </form>
         </li>
       </ul>
     </nav>

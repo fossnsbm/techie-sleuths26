@@ -1,23 +1,27 @@
 import TeamInfoCard from "../components/TeamInfoCard";
 import Link from "next/link";
+import { getAuthenticatedTeam } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-// Mock team data (same as dashboard for now)
-const MOCK_TEAM = {
-  name: "The Baker Street Irregulars",
-  leader: {
-    name: "Sherlock Holmes",
-    email: "sherlock@students.nsbm.ac.lk",
-    phone: "0771234567"
-  },
-  members: [
-    { name: "Sherlock Holmes", studentId: "12345" },
-    { name: "John Watson", studentId: "12346" },
-    { name: "Irene Adler", studentId: "12347" }
-  ],
-  status: "pending" as const
-};
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  // Fetch authenticated team data
+  const team = await getAuthenticatedTeam();
+
+  // This shouldn't happen due to middleware, but handle gracefully
+  if (!team) {
+    redirect('/login');
+  }
+
+  // Build leader object from team data
+  const leader = {
+    name: team.team_leader_name,
+    email: team.team_leader_email,
+    phone: team.team_leader_phone || undefined
+  };
+
   return (
     <div className="px-4 py-8 sm:px-6 sm:py-12 md:px-8">
       <div className="mx-auto max-w-5xl">
@@ -46,7 +50,7 @@ export default function TeamPage() {
         {/* Page Heading */}
         <section className="mb-8 sm:mb-10">
           <h1 className="mb-3 text-[clamp(2rem,6vw,3.5rem)] font-extrabold uppercase tracking-[0.08em] text-[#f5e6c8] md:tracking-[0.1em]">
-            {MOCK_TEAM.name}
+            {team.team_name}
           </h1>
           <p className="text-lg text-[#c4a07a] sm:text-xl">
             Team Information & Members
@@ -56,10 +60,10 @@ export default function TeamPage() {
         {/* Team Details Card */}
         <section>
           <TeamInfoCard
-            teamName={MOCK_TEAM.name}
-            status={MOCK_TEAM.status}
-            leader={MOCK_TEAM.leader}
-            members={MOCK_TEAM.members}
+            teamName={team.team_name}
+            status={(team.status || 'pending') as "pending" | "approved" | "rejected"}
+            leader={leader}
+            members={team.team_members}
           />
         </section>
       </div>

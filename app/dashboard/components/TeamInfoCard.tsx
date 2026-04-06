@@ -6,7 +6,7 @@ interface TeamMember {
 interface TeamLeader {
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
 }
 
 interface TeamInfoCardProps {
@@ -60,7 +60,7 @@ export default function TeamInfoCard({ teamName, status, leader, members }: Team
               <span className="text-[#c4a07a]">Email:</span> {leader.email}
             </p>
             <p className="text-[#f5e6c8]">
-              <span className="text-[#c4a07a]">Phone:</span> {leader.phone}
+              <span className="text-[#c4a07a]">Phone:</span> {leader.phone || 'Not provided'}
             </p>
           </div>
         </div>

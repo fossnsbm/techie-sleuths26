@@ -1,25 +1,11 @@
 import CompactTeamSummary from "./components/CompactTeamSummary";
 import StatsCard from "./components/StatsCard";
 import GameCard from "./components/GameCard";
+import { getAuthenticatedTeam } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-// Mock team data
-const MOCK_TEAM = {
-  name: "The Baker Street Irregulars",
-  leader: {
-    name: "Sherlock Holmes",
-    email: "sherlock@students.nsbm.ac.lk",
-    phone: "0771234567"
-  },
-  members: [
-    { name: "Sherlock Holmes", studentId: "12345" },
-    { name: "John Watson", studentId: "12346" },
-    { name: "Irene Adler", studentId: "12347" }
-  ],
-  status: "pending" as const,
-  points: 0,
-  rank: "TBD",
-  gamesCompleted: 0
-};
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
 
 // Games data (excluding The Vault Breakers - presented separately)
 const GAMES = [
@@ -49,14 +35,29 @@ const GAMES = [
   }
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  // Fetch authenticated team data
+  const team = await getAuthenticatedTeam();
+
+  // This shouldn't happen due to middleware, but handle gracefully
+  if (!team) {
+    redirect('/login');
+  }
+
+  // Mock stats (will be replaced with real data later)
+  const stats = {
+    points: 0,
+    rank: "TBD",
+    gamesCompleted: 0
+  };
+
   return (
     <div className="px-4 py-8 sm:px-6 sm:py-12 md:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Welcome Header */}
         <section className="mb-8 sm:mb-12">
           <h1 className="mb-3 text-[clamp(2rem,6vw,3.5rem)] font-extrabold uppercase tracking-[0.08em] text-[#f5e6c8] md:tracking-[0.1em]">
-            Welcome, {MOCK_TEAM.name}
+            Welcome, {team.team_name}
           </h1>
           <p className="text-lg text-[#c4a07a] sm:text-xl">
             Unravel the mysteries. One challenge at a time.
@@ -66,9 +67,9 @@ export default function DashboardPage() {
         {/* Compact Team Summary */}
         <section className="mb-6 sm:mb-8">
           <CompactTeamSummary
-            teamName={MOCK_TEAM.name}
-            status={MOCK_TEAM.status}
-            memberCount={MOCK_TEAM.members.length}
+            teamName={team.team_name}
+            status={(team.status || 'pending') as "pending" | "approved" | "rejected"}
+            memberCount={team.team_members.length}
           />
         </section>
 
@@ -80,19 +81,19 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             <StatsCard 
               label="Total Points" 
-              value={MOCK_TEAM.points} 
+              value={stats.points} 
             />
             <StatsCard 
               label="Rank" 
-              value={MOCK_TEAM.rank} 
+              value={stats.rank} 
             />
             <StatsCard 
               label="Completed" 
-              value={`${MOCK_TEAM.gamesCompleted}/3`} 
+              value={`${stats.gamesCompleted}/3`} 
             />
             <StatsCard 
               label="Status" 
-              value={MOCK_TEAM.status.charAt(0).toUpperCase() + MOCK_TEAM.status.slice(1)} 
+              value={team.status ? team.status.charAt(0).toUpperCase() + team.status.slice(1) : 'Pending'} 
             />
           </div>
         </section>
