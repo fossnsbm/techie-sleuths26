@@ -56,6 +56,81 @@ export type Database = {
         }
         Relationships: []
       }
+      trail_of_shadows_questions: {
+        Row: {
+          answer: string
+          created_at: string | null
+          description: string
+          difficulty: string
+          id: number
+          points: number
+          title: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          description: string
+          difficulty: string
+          id: number
+          points?: number
+          title: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          description?: string
+          difficulty?: string
+          id?: number
+          points?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      trail_of_shadows_submissions: {
+        Row: {
+          id: string
+          is_correct: boolean
+          points_awarded: number
+          question_id: number
+          submitted_answer: string
+          submitted_at: string | null
+          team_id: string
+        }
+        Insert: {
+          id?: string
+          is_correct: boolean
+          points_awarded?: number
+          question_id: number
+          submitted_answer: string
+          submitted_at?: string | null
+          team_id: string
+        }
+        Update: {
+          id?: string
+          is_correct?: boolean
+          points_awarded?: number
+          question_id?: number
+          submitted_answer?: string
+          submitted_at?: string | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_of_shadows_submissions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "trail_of_shadows_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trail_of_shadows_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

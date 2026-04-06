@@ -3,6 +3,7 @@ import StatsCard from "./components/StatsCard";
 import GameCard from "./components/GameCard";
 import { getAuthenticatedTeam } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getTrailOfShadowsScore } from "@/app/actions/trail-of-shadows";
 
 // Force dynamic rendering since we use cookies
 export const dynamic = 'force-dynamic';
@@ -44,11 +45,14 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
-  // Mock stats (will be replaced with real data later)
+  // Fetch real Trail of Shadows score
+  const trailOfShadowsScore = await getTrailOfShadowsScore();
+
+  // Calculate stats
   const stats = {
-    points: 0,
+    points: trailOfShadowsScore.totalScore,
     rank: "TBD",
-    gamesCompleted: 0
+    gamesCompleted: trailOfShadowsScore.questionsCompleted === 10 ? 1 : 0
   };
 
   return (
