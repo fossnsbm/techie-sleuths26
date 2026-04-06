@@ -6,37 +6,10 @@ import { redirect } from "next/navigation";
 import { getTrailOfShadowsScore } from "@/app/actions/trail-of-shadows";
 import { getNoExitScore } from "@/app/actions/no-exit";
 import { getAIInterrogationScore } from "@/app/actions/ai-interrogation";
+import { getGameAccessState } from "@/lib/game-access";
 
 // Force dynamic rendering since we use cookies
 export const dynamic = 'force-dynamic';
-
-// Games data (excluding The Vault Breakers - presented separately)
-const GAMES = [
-  { 
-    id: 2, 
-    title: "Trail of Shadows", 
-    image: "/2.png", 
-    description: "Find the Clues then Solve the Puzzle", 
-    status: "active" as const,
-    href: "/dashboard/games/trail-of-shadows"
-  },
-  { 
-    id: 3, 
-    title: "No Exit", 
-    image: "/3.png", 
-    description: "It'z about Challenges find the Hidden Keys", 
-    status: "active" as const,
-    href: "/dashboard/games/no-exit"
-  },
-  { 
-    id: 4, 
-    title: "The AI Interrogation", 
-    image: "/4.png", 
-    description: "Not about Problems just be Creative", 
-    status: "active" as const,
-    href: "/dashboard/games/ai-interrogation"
-  }
-];
 
 export default async function DashboardPage() {
   // Fetch authenticated team data
@@ -55,6 +28,37 @@ export default async function DashboardPage() {
   const completedTrailOfShadows = trailOfShadowsScore.questionsCompleted === 10 ? 1 : 0;
   const completedNoExit = noExitScore.challengesCompleted === 3 ? 1 : 0;
   const completedAIInterrogation = aiInterrogationScore.hasSubmitted ? 1 : 0;
+  const access = getGameAccessState(
+    trailOfShadowsScore.questionsCompleted,
+    noExitScore.challengesCompleted
+  );
+
+  const games = [
+    {
+      id: 2,
+      title: "Trail of Shadows",
+      image: "/2.png",
+      description: "Find the Clues then Solve the Puzzle",
+      status: "active" as const,
+      href: "/dashboard/games/trail-of-shadows"
+    },
+    {
+      id: 3,
+      title: "No Exit",
+      image: "/3.png",
+      description: "It'z about Challenges find the Hidden Keys",
+      status: access.canAccessNoExit ? "active" as const : "locked" as const,
+      href: "/dashboard/games/no-exit"
+    },
+    {
+      id: 4,
+      title: "The AI Interrogation",
+      image: "/4.png",
+      description: "Not about Problems just be Creative",
+      status: access.canAccessAIInterrogation ? "active" as const : "locked" as const,
+      href: "/dashboard/games/ai-interrogation"
+    }
+  ];
 
   // Calculate stats
   const stats = {
@@ -116,7 +120,7 @@ export default async function DashboardPage() {
             Investigation Games
           </h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-            {GAMES.map((game) => (
+            {games.map((game) => (
               <GameCard
                 key={game.id}
                 id={game.id}
