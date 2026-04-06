@@ -17,6 +17,7 @@ interface SubmissionState {
     imagePath: string;
     imageUrl: string;
     awardedPoints: number;
+    evaluatedAt: string | null;
     createdAt: string | null;
   } | null;
 }
@@ -141,6 +142,7 @@ export default function AIInterrogationPage() {
   }
 
   const isLocked = submissionState.hasSubmitted;
+  const isEvaluated = Boolean(submissionState.submission?.evaluatedAt);
 
   return (
     <div className="min-h-screen text-white site-background">
@@ -151,11 +153,19 @@ export default function AIInterrogationPage() {
             <p className="text-xl text-[#c4a07a] font-semibold mb-2">Not about Problems, Just be Creative</p>
             <p className="text-lg text-gray-300 mb-4">Recreate the reference image using your AI model.</p>
             {isLocked && (
-              <div className="inline-block bg-[rgba(20,120,40,0.15)] border border-[rgba(20,120,40,0.4)] rounded-lg px-6 py-3">
-                <p className="text-sm font-bold uppercase tracking-[0.08em] text-green-300">
-                  Submitted - Awaiting Evaluation
-                </p>
-              </div>
+              isEvaluated ? (
+                <div className="inline-block bg-[rgba(60,120,20,0.2)] border border-[rgba(120,180,60,0.5)] rounded-lg px-6 py-3">
+                  <p className="text-sm font-bold uppercase tracking-[0.08em] text-lime-300">
+                    Evaluated - {submissionState.submission?.awardedPoints || 0} points
+                  </p>
+                </div>
+              ) : (
+                <div className="inline-block bg-[rgba(20,120,40,0.15)] border border-[rgba(20,120,40,0.4)] rounded-lg px-6 py-3">
+                  <p className="text-sm font-bold uppercase tracking-[0.08em] text-green-300">
+                    Submitted - Awaiting Evaluation
+                  </p>
+                </div>
+              )
             )}
           </ScrollReveal>
 
