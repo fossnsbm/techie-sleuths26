@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createMiddlewareClient } from '@/lib/supabase-auth'
+import { getGameAccessState } from '@/lib/game-access'
 
 export async function proxy(request: NextRequest) {
   const { supabase, response } = createMiddlewareClient(request)
@@ -18,6 +19,40 @@ export async function proxy(request: NextRequest) {
       .eq('user_id', user.id)
       .single()
     return team?.vault_unlocked ?? false
+  }
+
+  const getGameProgress = async () => {
+    if (!user) {
+      return { trailQuestionsCompleted: 0, noExitChallengesCompleted: 0 }
+    }
+
+    const { data: team } = await supabase
+      .from('teams')
+      .select('id')
+      .eq('user_id', user.id)
+      .single()
+
+    if (!team) {
+      return { trailQuestionsCompleted: 0, noExitChallengesCompleted: 0 }
+    }
+
+    const [{ count: trailCount }, { count: noExitCount }] = await Promise.all([
+      supabase
+        .from('trail_of_shadows_submissions')
+        .select('id', { count: 'exact', head: true })
+        .eq('team_id', team.id)
+        .eq('is_correct', true),
+      supabase
+        .from('no_exit_submissions')
+        .select('id', { count: 'exact', head: true })
+        .eq('team_id', team.id)
+        .eq('is_correct', true)
+    ])
+
+    return {
+      trailQuestionsCompleted: trailCount || 0,
+      noExitChallengesCompleted: noExitCount || 0
+    }
   }
 
   // Protected route: /vault (requires login)
@@ -57,6 +92,19 @@ export async function proxy(request: NextRequest) {
     }
 
     // Vault is unlocked - allow access to dashboard
+    if (pathname === '/dashboard/games/no-exit' || pathname === '/dashboard/games/ai-interrogation') {
+      const { trailQuestionsCompleted, noExitChallengesCompleted } = await getGameProgress()
+      const access = getGameAccessState(trailQuestionsCompleted, noExitChallengesCompleted)
+
+      if (pathname === '/dashboard/games/no-exit' && !access.canAccessNoExit) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
+
+      if (pathname === '/dashboard/games/ai-interrogation' && !access.canAccessAIInterrogation) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
+    }
+
     return response
   }
 
