@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import ScrollSlide from "@/components/ScrollSlide";
 
 interface GameCardProps {
@@ -9,9 +10,10 @@ interface GameCardProps {
   image: string;
   description: string;
   status: "coming_soon" | "active" | "completed" | "locked";
+  href?: string;
 }
 
-export default function GameCard({ id, title, image, description, status }: GameCardProps) {
+export default function GameCard({ id, title, image, description, status, href }: GameCardProps) {
   const getStatusBadge = () => {
     switch (status) {
       case "coming_soon":
@@ -30,10 +32,10 @@ export default function GameCard({ id, title, image, description, status }: Game
   const badge = getStatusBadge();
   const isComingSoon = status === "coming_soon" || status === "locked";
 
-  return (
+  const cardContent = (
     <div
       className={`relative mx-auto w-full max-w-[380px] border border-[rgba(200,120,60,0.2)] bg-[rgba(30,12,5,0.8)] p-4 transition hover:-translate-y-2 hover:border-[rgba(200,120,60,0.5)] sm:p-5 md:p-6 ${
-        isComingSoon ? "opacity-80" : ""
+        isComingSoon ? "opacity-80" : "cursor-pointer"
       }`}
     >
       <div className="relative mb-4 flex h-[180px] w-full items-center justify-center overflow-hidden bg-[#0a0300] sm:h-[210px] md:h-[220px]">
@@ -80,4 +82,14 @@ export default function GameCard({ id, title, image, description, status }: Game
       </div>
     </div>
   );
+
+  if (href && !isComingSoon) {
+    return (
+      <Link href={href}>
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 }

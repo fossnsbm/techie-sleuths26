@@ -28,21 +28,24 @@ const GAMES = [
     title: "Trail of Shadows", 
     image: "/2.png", 
     description: "Find the Clues then Solve the Puzzle", 
-    status: "coming_soon" as const 
+    status: "active" as const,
+    href: "/dashboard/games/trail-of-shadows"
   },
   { 
     id: 3, 
     title: "No Exit", 
     image: "/3.png", 
     description: "It'z about Challenges find the Hidden Keys", 
-    status: "coming_soon" as const 
+    status: "active" as const,
+    href: "/dashboard/games/no-exit"
   },
   { 
     id: 4, 
     title: "The AI Interrogation", 
     image: "/4.png", 
     description: "Not about Problems just be Creative", 
-    status: "coming_soon" as const 
+    status: "active" as const,
+    href: "/dashboard/games/ai-interrogation"
   }
 ];
 
@@ -108,6 +111,7 @@ export default function DashboardPage() {
                 image={game.image}
                 description={game.description}
                 status={game.status}
+                href={game.href}
               />
             ))}
           </div>
