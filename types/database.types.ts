@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      no_exit_challenges: {
+        Row: {
+          answer: string
+          attachment_path: string | null
+          created_at: string | null
+          description: string
+          id: number
+          points: number
+          title: string
+        }
+        Insert: {
+          answer: string
+          attachment_path?: string | null
+          created_at?: string | null
+          description: string
+          id: number
+          points: number
+          title: string
+        }
+        Update: {
+          answer?: string
+          attachment_path?: string | null
+          created_at?: string | null
+          description?: string
+          id?: number
+          points?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      no_exit_submissions: {
+        Row: {
+          challenge_id: number
+          id: string
+          is_correct: boolean
+          points_awarded: number
+          submitted_answer: string
+          submitted_at: string | null
+          team_id: string
+        }
+        Insert: {
+          challenge_id: number
+          id?: string
+          is_correct: boolean
+          points_awarded?: number
+          submitted_answer: string
+          submitted_at?: string | null
+          team_id: string
+        }
+        Update: {
+          challenge_id?: number
+          id?: string
+          is_correct?: boolean
+          points_awarded?: number
+          submitted_answer?: string
+          submitted_at?: string | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "no_exit_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "no_exit_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "no_exit_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string | null
