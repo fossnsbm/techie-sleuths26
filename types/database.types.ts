@@ -61,7 +61,6 @@ export type Database = {
           answer: string
           created_at: string | null
           description: string
-          difficulty: string
           id: number
           points: number
           title: string
@@ -70,7 +69,6 @@ export type Database = {
           answer: string
           created_at?: string | null
           description: string
-          difficulty: string
           id: number
           points?: number
           title: string
@@ -79,7 +77,6 @@ export type Database = {
           answer?: string
           created_at?: string | null
           description?: string
-          difficulty?: string
           id?: number
           points?: number
           title?: string

@@ -10,26 +10,10 @@ interface Question {
   id: number;
   title: string;
   description: string;
-  difficulty: string;
   points: number;
   isAnswered: boolean;
   pointsEarned: number;
 }
-
-const getDifficultyColor = (difficulty: string) => {
-  switch (difficulty) {
-    case "Beginner":
-      return "text-green-400";
-    case "Intermediate":
-      return "text-yellow-400";
-    case "Advanced":
-      return "text-orange-400";
-    case "Expert":
-      return "text-red-400";
-    default:
-      return "text-gray-400";
-  }
-};
 
 export default function GamePage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -151,9 +135,6 @@ export default function GamePage() {
                       <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg group-hover:shadow-amber-600/50">
                         {question.id}
                       </div>
-                      <span className={`text-xs font-bold uppercase tracking-widest ${getDifficultyColor(question.difficulty)}`}>
-                        {question.difficulty}
-                      </span>
                     </div>
 
                     {/* Content */}

@@ -11,7 +11,6 @@ interface QuestionProgress {
   id: number
   title: string
   description: string
-  difficulty: string
   points: number
   isAnswered: boolean
   pointsEarned: number
@@ -40,7 +39,7 @@ export async function getTrailOfShadowsQuestions(): Promise<QuestionWithoutAnswe
     
     const { data: questions, error } = await supabase
       .from('trail_of_shadows_questions')
-      .select('id, title, description, difficulty, points')
+      .select('id, title, description, points')
       .order('id', { ascending: true })
 
     if (error) {
@@ -81,7 +80,7 @@ export async function getTrailOfShadowsProgress(): Promise<TeamProgress> {
     // Get all questions
     const { data: questions, error: questionsError } = await supabase
       .from('trail_of_shadows_questions')
-      .select('id, title, description, difficulty, points')
+      .select('id, title, description, points')
       .order('id', { ascending: true })
 
     if (questionsError || !questions) {
@@ -111,7 +110,6 @@ export async function getTrailOfShadowsProgress(): Promise<TeamProgress> {
       id: q.id,
       title: q.title,
       description: q.description,
-      difficulty: q.difficulty,
       points: q.points,
       isAnswered: submissionMap.has(q.id),
       pointsEarned: submissionMap.get(q.id) || 0
