@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { getTrailOfShadowsScore } from "@/app/actions/trail-of-shadows";
 import { getNoExitScore } from "@/app/actions/no-exit";
 import { getAIInterrogationScore } from "@/app/actions/ai-interrogation";
+import { getTeamRank } from "@/app/actions/leaderboard";
 import { getGameAccessState } from "@/lib/game-access";
 
 // Force dynamic rendering since we use cookies
@@ -24,6 +25,7 @@ export default async function DashboardPage() {
   const trailOfShadowsScore = await getTrailOfShadowsScore();
   const noExitScore = await getNoExitScore();
   const aiInterrogationScore = await getAIInterrogationScore();
+  const teamRank = await getTeamRank(team.id);
 
   const completedTrailOfShadows = trailOfShadowsScore.questionsCompleted === 10 ? 1 : 0;
   const completedNoExit = noExitScore.challengesCompleted === 3 ? 1 : 0;
@@ -63,7 +65,7 @@ export default async function DashboardPage() {
   // Calculate stats
   const stats = {
     points: trailOfShadowsScore.totalScore + noExitScore.totalScore + aiInterrogationScore.totalScore,
-    rank: "TBD",
+    rank: teamRank ? `#${teamRank}` : "N/A",
     gamesCompleted: completedTrailOfShadows + completedNoExit + completedAIInterrogation
   };
 
@@ -84,7 +86,6 @@ export default async function DashboardPage() {
         <section className="mb-6 sm:mb-8">
           <CompactTeamSummary
             teamName={team.team_name}
-            status={(team.status || 'pending') as "pending" | "approved" | "rejected"}
             memberCount={team.team_members.length}
           />
         </section>
@@ -108,8 +109,8 @@ export default async function DashboardPage() {
               value={`${stats.gamesCompleted}/3`} 
             />
             <StatsCard 
-              label="Status" 
-              value={team.status ? team.status.charAt(0).toUpperCase() + team.status.slice(1) : 'Pending'} 
+              label="Members" 
+              value={team.team_members.length} 
             />
           </div>
         </section>

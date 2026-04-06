@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as z from 'zod'
 import { toast } from 'sonner'
 import { registerTeam } from '@/app/actions/register-team'
+import { isRegistrationOpen } from '@/lib/registration-config'
 
 // Zod schemas
 const teamMember = z.object({
@@ -27,6 +28,8 @@ type TeamMember = z.infer<typeof teamMember>
 type RegistrationFormData = z.infer<typeof registrationSchema>
 
 export default function RegForm() {
+  const registrationOpen = isRegistrationOpen()
+
   const getMemberLabel = (index: number): string => {
     if (index === 0) return "TEAM LEADER";
     return `MEMBER ${index + 1}`;
@@ -79,6 +82,13 @@ export default function RegForm() {
   };
 
   const handleSubmit = async (formData: FormData) => {
+    if (!registrationOpen) {
+      toast.error('Registration closed', {
+        description: 'Registration is currently closed.'
+      })
+      return
+    }
+
     setErrors([]);
     setIsSubmitting(true);
 
@@ -179,6 +189,13 @@ export default function RegForm() {
               handleSubmit(new FormData(e.currentTarget))
             }}
           >
+            {!registrationOpen && (
+              <div className="mb-5 rounded border border-amber-500/40 bg-amber-900/20 p-4">
+                <p className="text-sm font-semibold text-amber-300">Registration is currently closed.</p>
+              </div>
+            )}
+
+            <fieldset disabled={!registrationOpen || isSubmitting}>
             {errors.length > 0 && (
               <div className="mb-5 rounded border border-red-500/30 bg-red-900/20 p-4">
                 <p className="mb-2 text-sm font-semibold text-red-400">Please fix the following errors:</p>
@@ -354,11 +371,12 @@ export default function RegForm() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={!registrationOpen || isSubmitting}
               className="w-full rounded bg-[#c87838] px-4 py-3.5 text-sm font-semibold tracking-[0.08em] text-white transition hover:bg-[#a85e2a] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSubmitting ? 'REGISTERING...' : 'REGISTER TEAM'}
+              {!registrationOpen ? 'REGISTRATION CLOSED' : isSubmitting ? 'REGISTERING...' : 'REGISTER TEAM'}
             </button>
+            </fieldset>
           </form>
         )}
       </div>

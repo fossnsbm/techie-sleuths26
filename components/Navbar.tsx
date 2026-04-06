@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { isRegistrationOpen } from "@/lib/registration-config";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const registrationOpen = isRegistrationOpen();
 
   return (
     <nav className="fixed inset-x-0 top-0 z-[100] flex items-center justify-between border-b border-[rgba(200,120,60,0.15)] bg-[rgba(18,6,2,0.72)] px-6 py-4 backdrop-blur-[10px] sm:px-10">
@@ -39,15 +41,17 @@ export default function Navbar() {
             HOME
           </Link>
         </li>
-        <li>
-          <Link
-            href="#register"
-            onClick={() => setMenuOpen(false)}
-            className="block border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:border-none sm:px-0 sm:py-0"
-          >
-            REGISTER
-          </Link>
-        </li>
+        {registrationOpen && (
+          <li>
+            <Link
+              href="#register"
+              onClick={() => setMenuOpen(false)}
+              className="block border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:border-none sm:px-0 sm:py-0"
+            >
+              REGISTER
+            </Link>
+          </li>
+        )}
         <li>
           <Link
             href="#about"
@@ -75,6 +79,17 @@ export default function Navbar() {
             LEADERBOARD
           </Link>
         </li>
+        {registrationOpen && (
+          <li>
+            <Link
+              href="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="block border-b border-[rgba(200,120,60,0.08)] px-6 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#d4b896] transition hover:text-[#f5e6c8] sm:border-none sm:px-0 sm:py-0"
+            >
+              INVESTIGATE
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );

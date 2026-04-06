@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/lib/supabase-server'
 import { z } from 'zod'
+import { isRegistrationOpen } from '@/lib/registration-config'
 
 // Validation schemas matching the registration form
 const teamMemberSchema = z.object({
@@ -35,6 +36,13 @@ interface AuthSignUpResponse {
 }
 
 export async function registerTeam(data: RegistrationData): Promise<RegistrationResponse> {
+  if (!isRegistrationOpen()) {
+    return {
+      success: false,
+      error: 'Registration is currently closed.'
+    }
+  }
+
   try {
     // Validate input data
     const validated = registrationSchema.safeParse(data)

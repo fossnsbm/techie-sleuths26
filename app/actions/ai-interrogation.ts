@@ -9,6 +9,7 @@ interface AIInterrogationSubmission {
   imagePath: string
   imageUrl: string
   awardedPoints: number
+  evaluatedAt: string | null
   createdAt: string | null
 }
 
@@ -49,7 +50,7 @@ export async function getAIInterrogationSubmission(): Promise<AIInterrogationSub
     const supabase = await createAuthClient()
     const { data: submission, error } = await supabase
       .from('ai_interrogation_submissions')
-      .select('id, prompt_text, image_path, awarded_points, created_at')
+      .select('id, prompt_text, image_path, awarded_points, evaluated_at, created_at')
       .eq('team_id', teamId)
       .maybeSingle()
 
@@ -74,6 +75,7 @@ export async function getAIInterrogationSubmission(): Promise<AIInterrogationSub
         imagePath: submission.image_path,
         imageUrl: data.publicUrl,
         awardedPoints: submission.awarded_points,
+        evaluatedAt: submission.evaluated_at,
         createdAt: submission.created_at
       }
     }
