@@ -6,6 +6,17 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
+// Helper to check if error is a Next.js redirect (thrown by redirect())
+function isRedirectError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'digest' in error &&
+    typeof (error as { digest: unknown }).digest === 'string' &&
+    (error as { digest: string }).digest.startsWith('NEXT_REDIRECT')
+  )
+}
+
 function LoginForm() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirect')
@@ -38,6 +49,11 @@ function LoginForm() {
         })
       }
     } catch (error) {
+      // Redirect errors are expected - re-throw them to let Next.js handle the redirect
+      if (isRedirectError(error)) {
+        throw error
+      }
+      
       console.error('Login error:', error)
       setError('An unexpected error occurred. Please try again.')
       toast.error('Login failed', {
