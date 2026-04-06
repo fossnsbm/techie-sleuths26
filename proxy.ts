@@ -55,6 +55,47 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  const isAdminUser = async () => {
+    if (!user) return false
+
+    const { data: admin } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .maybeSingle()
+
+    return Boolean(admin)
+  }
+
+  // Protected route: /admin/* (requires admin user)
+  if (pathname.startsWith('/admin')) {
+    if (pathname === '/admin/login') {
+      if (!user) {
+        return response
+      }
+
+      const isAdmin = await isAdminUser()
+      if (isAdmin) {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      }
+
+      return response
+    }
+
+    if (!user) {
+      const redirectUrl = new URL('/admin/login', request.url)
+      return NextResponse.redirect(redirectUrl)
+    }
+
+    const isAdmin = await isAdminUser()
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+
+    return response
+  }
+
   // Protected route: /vault (requires login)
   if (pathname === '/vault') {
     if (!user) {
