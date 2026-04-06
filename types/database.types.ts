@@ -14,6 +14,119 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_interrogation_submissions: {
+        Row: {
+          awarded_points: number
+          created_at: string | null
+          evaluated_at: string | null
+          id: string
+          image_path: string
+          prompt_text: string
+          team_id: string
+        }
+        Insert: {
+          awarded_points?: number
+          created_at?: string | null
+          evaluated_at?: string | null
+          id?: string
+          image_path: string
+          prompt_text: string
+          team_id: string
+        }
+        Update: {
+          awarded_points?: number
+          created_at?: string | null
+          evaluated_at?: string | null
+          id?: string
+          image_path?: string
+          prompt_text?: string
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_interrogation_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: true
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      no_exit_challenges: {
+        Row: {
+          answer: string
+          attachment_path: string | null
+          created_at: string | null
+          description: string
+          id: number
+          points: number
+          title: string
+        }
+        Insert: {
+          answer: string
+          attachment_path?: string | null
+          created_at?: string | null
+          description: string
+          id: number
+          points: number
+          title: string
+        }
+        Update: {
+          answer?: string
+          attachment_path?: string | null
+          created_at?: string | null
+          description?: string
+          id?: number
+          points?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      no_exit_submissions: {
+        Row: {
+          challenge_id: number
+          id: string
+          is_correct: boolean
+          points_awarded: number
+          submitted_answer: string
+          submitted_at: string | null
+          team_id: string
+        }
+        Insert: {
+          challenge_id: number
+          id?: string
+          is_correct: boolean
+          points_awarded?: number
+          submitted_answer: string
+          submitted_at?: string | null
+          team_id: string
+        }
+        Update: {
+          challenge_id?: number
+          id?: string
+          is_correct?: boolean
+          points_awarded?: number
+          submitted_answer?: string
+          submitted_at?: string | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "no_exit_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "no_exit_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "no_exit_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string | null
@@ -26,6 +139,7 @@ export type Database = {
           team_name: string
           updated_at: string | null
           user_id: string | null
+          vault_unlocked: boolean
         }
         Insert: {
           created_at?: string | null
@@ -38,6 +152,7 @@ export type Database = {
           team_name: string
           updated_at?: string | null
           user_id?: string | null
+          vault_unlocked?: boolean
         }
         Update: {
           created_at?: string | null
@@ -50,8 +165,81 @@ export type Database = {
           team_name?: string
           updated_at?: string | null
           user_id?: string | null
+          vault_unlocked?: boolean
         }
         Relationships: []
+      }
+      trail_of_shadows_questions: {
+        Row: {
+          answer: string
+          created_at: string | null
+          description: string
+          id: number
+          points: number
+          title: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          description: string
+          id: number
+          points?: number
+          title: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          description?: string
+          id?: number
+          points?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      trail_of_shadows_submissions: {
+        Row: {
+          id: string
+          is_correct: boolean
+          points_awarded: number
+          question_id: number
+          submitted_answer: string
+          submitted_at: string | null
+          team_id: string
+        }
+        Insert: {
+          id?: string
+          is_correct: boolean
+          points_awarded?: number
+          question_id: number
+          submitted_answer: string
+          submitted_at?: string | null
+          team_id: string
+        }
+        Update: {
+          id?: string
+          is_correct?: boolean
+          points_awarded?: number
+          question_id?: number
+          submitted_answer?: string
+          submitted_at?: string | null
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_of_shadows_submissions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "trail_of_shadows_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trail_of_shadows_submissions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
